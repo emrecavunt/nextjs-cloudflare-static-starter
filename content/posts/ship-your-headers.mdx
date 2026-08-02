@@ -1,0 +1,27 @@
+---
+title: 'Ship your headers in a text file'
+date: '2026-08-02'
+summary: 'A static export has no server to set headers on. Cloudflare Pages reads them from a _headers file, the detail most tutorials skip.'
+tags: ['Cloudflare', 'Security']
+---
+
+With no server in the request path, `next.config.js` headers do nothing.
+There is no Next server to send them. Cloudflare Pages instead reads a
+[`_headers`](https://developers.cloudflare.com/pages/configuration/headers/)
+file from your published output. Keep it in `public/` and Next copies it into
+`out/` verbatim on every build.
+
+```text
+/*
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'none'
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+```
+
+That one file is the difference between a site that _works_ and a site that
+passes a security review. A static site with no CSP is a static site one
+injected script away from trouble. Immutable files do not protect the HTML
+from what a compromised dependency writes into it at build time.
+
+Redirects are the same deal: a `public/_redirects` file, one rule per line,
+deployed with the site. Two text files, versioned with the content, reviewed in
+pull requests like everything else.

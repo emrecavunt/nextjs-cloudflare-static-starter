@@ -1,0 +1,7 @@
+# Copy to terraform.tfvars. Nothing secret belongs here. Values never enter
+# Terraform; only names, ARNs, and identifiers do.
+github_owner       = "my-github-username"
+repository         = "my-site"
+name               = "mysite"
+pages_project_name = "my-site"
+site_url           = "https://example.com"

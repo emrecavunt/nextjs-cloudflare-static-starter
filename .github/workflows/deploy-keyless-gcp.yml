@@ -1,0 +1,90 @@
+name: Deploy (keyless: GCP Secret Manager)
+
+# No Cloudflare token stored in GitHub. The workflow mints an OIDC token,
+# exchanges it for short-lived GCP credentials via Workload Identity
+# Federation, and reads the Cloudflare credentials from Secret Manager at
+# deploy time. The service account can only be assumed from THIS repository.
+#
+# Setup: terraform/gcp provisions everything and sets the Actions variables
+# below on the production/preview environments. Secret *values* are added
+# out-of-band: gcloud secrets versions add <id> --data-file=-
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write # required to mint the OIDC token for Workload Identity Federation
+  deployments: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ (github.event_name != 'pull_request' && github.ref == 'refs/heads/main') && 'production' || 'preview' }}
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Authenticate to Google Cloud (Workload Identity Federation)
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOYER_SA_EMAIL }}
+
+      - name: Fetch Cloudflare credentials from Secret Manager
+        id: cloudflare
+        uses: google-github-actions/get-secretmanager-secrets@v3
+        with:
+          secrets: |-
+            api_token:${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_SECRET_CLOUDFLARE_API_TOKEN }}
+            account_id:${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_SECRET_CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build static site
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+        run: pnpm build
+
+      - name: Deploy to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ steps.cloudflare.outputs.api_token }}
+          accountId: ${{ steps.cloudflare.outputs.account_id }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: >-
+            pages deploy out
+            --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
+            ${{ (github.event_name != 'pull_request' && github.ref == 'refs/heads/main') && '--branch=main' || '' }}
+
+      - name: Deployment summary
+        run: |
+          {
+            echo "### ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}"
+            echo ""
+            echo "- Type: ${{ (github.event_name != 'pull_request' && github.ref == 'refs/heads/main') && 'production' || 'preview' }}"
+            echo "- URL: ${{ steps.deploy.outputs.deployment-url }}"
+          } >> "$GITHUB_STEP_SUMMARY"

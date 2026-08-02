@@ -1,0 +1,5 @@
+# Cloudflare Pages redirects, one rule per line: from  to  [status]
+# Docs: https://developers.cloudflare.com/pages/configuration/redirects/
+#
+# Example: an old slug pointing at its new home.
+# /blog/old-post/  /blog/hello-static-web/  301

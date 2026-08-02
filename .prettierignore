@@ -1,0 +1,13 @@
+.next/
+out/
+node_modules/
+pnpm-lock.yaml
+test-results/
+playwright-report/
+
+# Whitespace-sensitive: Pages parses indentation literally
+public/_headers
+public/_redirects
+
+# Terraform has its own formatter
+terraform/

@@ -1,0 +1,25 @@
+---
+title: 'Hello, static web'
+date: '2026-08-01'
+summary: 'This post is a file. The site is a folder of files. That is the whole architecture, and it is enough.'
+tags: ['Next.js', 'Cloudflare']
+---
+
+This post lives at `content/posts/hello-static-web.mdx`. On the next build,
+Next.js renders it to `out/blog/hello-static-web/index.html`, and Cloudflare
+hands that file to every reader from a cache near them. No server computed
+anything to get you this sentence.
+
+## The content model is `ls content/posts`
+
+Drop a new `.mdx` file in `content/posts/` with the frontmatter shape above and
+it appears on the index and gets its own route: no admin panel, no migration,
+no database. Delete the file and the page stops existing. Version control is
+the CMS audit log you were going to build anyway.
+
+## What you give up
+
+A static export has **no API routes, no SSR, no ISR, no middleware, and no
+runtime image optimisation**. For content that changes when _you_ change it,
+that trade is close to free. For anything per-request it is the wrong shape,
+and no plugin will change that.

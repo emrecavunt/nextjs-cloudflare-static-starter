@@ -1,0 +1,100 @@
+name: Deploy (keyless: HashiCorp Vault)
+
+# For teams whose secrets already live in Vault. GitHub's OIDC token is
+# presented to Vault's JWT auth method, which maps it, bound to THIS
+# repository, onto a policy that can read exactly one KV path. No Vault token
+# and no Cloudflare token is ever stored in GitHub.
+#
+# Vault-side setup (once, by a Vault operator):
+#
+#   vault auth enable jwt
+#   vault write auth/jwt/config \
+#     oidc_discovery_url="https://token.actions.githubusercontent.com" \
+#     bound_issuer="https://token.actions.githubusercontent.com"
+#   vault write auth/jwt/role/github-deploy \
+#     role_type="jwt" user_claim="repository" \
+#     bound_audiences="https://github.com/<owner>" \
+#     bound_claims.repository="<owner>/<repo>" \
+#     policies="cloudflare-deploy" ttl="10m"
+#   vault kv put secret/cloudflare \
+#     CLOUDFLARE_API_TOKEN="..." CLOUDFLARE_ACCOUNT_ID="..."
+#
+# GitHub-side: environment variables VAULT_ADDR, VAULT_JWT_ROLE,
+# VAULT_NAMESPACE (optional), CLOUDFLARE_PAGES_PROJECT_NAME, NEXT_PUBLIC_SITE_URL.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write # required to mint the OIDC token Vault's JWT auth trusts
+  deployments: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ (github.event_name != 'pull_request' && github.ref == 'refs/heads/main') && 'production' || 'preview' }}
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Fetch Cloudflare credentials from Vault
+        id: cloudflare
+        uses: hashicorp/vault-action@v3
+        with:
+          url: ${{ vars.VAULT_ADDR }}
+          method: jwt
+          role: ${{ vars.VAULT_JWT_ROLE }}
+          namespace: ${{ vars.VAULT_NAMESPACE }}
+          secrets: |
+            secret/data/cloudflare CLOUDFLARE_API_TOKEN | api_token ;
+            secret/data/cloudflare CLOUDFLARE_ACCOUNT_ID | account_id
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build static site
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+        run: pnpm build
+
+      - name: Deploy to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ steps.cloudflare.outputs.api_token }}
+          accountId: ${{ steps.cloudflare.outputs.account_id }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: >-
+            pages deploy out
+            --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
+            ${{ (github.event_name != 'pull_request' && github.ref == 'refs/heads/main') && '--branch=main' || '' }}
+
+      - name: Deployment summary
+        run: |
+          {
+            echo "### ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}"
+            echo ""
+            echo "- Type: ${{ (github.event_name != 'pull_request' && github.ref == 'refs/heads/main') && 'production' || 'preview' }}"
+            echo "- URL: ${{ steps.deploy.outputs.deployment-url }}"
+          } >> "$GITHUB_STEP_SUMMARY"
