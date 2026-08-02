@@ -7,6 +7,18 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Build no longer crashes with `TypeError: Invalid URL` when
+  `NEXT_PUBLIC_SITE_URL` is set but empty (the deploy workflows pass the
+  GitHub variable through, and an unconfigured variable arrives as `""`)
+
+### Security
+
+- Bump `next`, `@next/mdx`, and `eslint-config-next` to 16.2.12 (9 Next.js
+  advisories); override transitive `postcss` to ^8.5.25 and `sharp` to
+  ^0.35.3 (4 advisories). `pnpm audit` is clean
+
 ## [0.1.0] - 2026-08-02
 
 ### Added

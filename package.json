@@ -19,8 +19,8 @@
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
-    "@next/mdx": "16.2.7",
-    "next": "16.2.7",
+    "@next/mdx": "16.2.12",
+    "next": "16.2.12",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "remark-frontmatter": "^5.0.0",
@@ -36,11 +36,17 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.7",
+    "eslint-config-next": "16.2.12",
     "prettier": "^3.3.0",
     "prettier-plugin-tailwindcss": "^0.6.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "^4"
+  },
+  "pnpm": {
+    "overrides": {
+      "postcss": "^8.5.25",
+      "sharp": "^0.35.3"
+    }
   }
 }
