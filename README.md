@@ -25,6 +25,11 @@ pay for it knowingly.
 - **MDX via the official `@next/mdx`**. No Contentlayer, no CMS; the content
   model is `ls content/posts`. Frontmatter is re-exported per module by
   `remark-mdx-frontmatter`, typed via `mdx.d.ts`
+- **MDX components in the box**: Shiki code blocks (build-time highlighting,
+  line numbers, copy button), `Callout`/`Warning`/`Insight`, `TLDR`,
+  captioned `Image` — see [MDX components](#mdx-components) below
+- **Post chrome**: reading time computed at build time, formatted dates, and
+  a reading-progress bar on post pages
 - **Tailwind CSS v4** with the typography plugin, Prettier with class sorting,
   ESLint 9 flat config. All wired
 - **Security headers and redirects as files**: `public/_headers` and
@@ -86,6 +91,53 @@ Words go here. GFM tables, task lists, and fenced code blocks all work.
 On the next build, `out/blog/my-post/index.html` exists and the home page
 lists it, sorted by `date`, no code changes. Delete the file and the page
 stops existing. `git log` is the CMS audit trail.
+
+## MDX components
+
+Every post can use these without imports; they're registered once in
+`mdx-components.tsx` and live in `components/mdx/`. The showcase post at
+`/blog/mdx-components/` is the living demo (and the e2e fixture).
+
+**Code blocks** are highlighted by Shiki at build time
+(`rehype-pretty-code`, theme `github-dark-default`) — zero highlighting JS
+ships to the reader. The copy button, language tag, and line numbers are
+added by `components/mdx/pre.tsx` and `app/globals.css`:
+
+    ```ts
+    export function greet(name: string): string {
+      return `Hello, ${name}!`
+    }
+    ```
+
+**Callouts** come in three kinds; unknown types fall back to `note`:
+
+```mdx
+<Callout type="note">Context that helps but isn't load-bearing.</Callout>
+<Warning>Things that silently break a static export.</Warning>
+<Insight>The one sentence a reader should keep.</Insight>
+```
+
+**TLDR** is the executive-summary box that opens a long post:
+
+```mdx
+<TLDR>The whole post in two sentences, for the skimmers.</TLDR>
+```
+
+**Image** wraps `next/image` in a figure with an optional caption. A static
+export has no optimizer to infer dimensions, so pass them explicitly:
+
+```mdx
+<Image
+  src="/images/diagram.svg"
+  alt="..."
+  width={800}
+  height={400}
+  caption="The whole architecture, in one figure."
+/>
+```
+
+Headings get anchor `id`s via `rehype-slug`. Delete any component you don't
+need — each is self-contained and `mdx-components.tsx` is the only registry.
 
 ## The two files that matter
 
@@ -183,8 +235,9 @@ create those environments and fill them with non-secret variables only.
 
 ```
 app/                    # routes: home, /blog/[slug], 404, sitemap, robots, icon
+components/             # site chrome (header/footer/shell) + mdx/ (Pre, Callout, …)
 content/posts/          # the CMS: one .mdx per post
-lib/                    # getPostSlugs/getAllPosts (reads content/, imports frontmatter)
+lib/                    # getPostSlugs/getAllPosts, reading time, date formatting
 public/_headers         # security headers, shipped verbatim into out/
 public/_redirects       # redirects, same deal
 tests/e2e/              # Playwright vs the local static export (pre-push gate)

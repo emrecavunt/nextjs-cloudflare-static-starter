@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import { PageShell } from '@/components/page-shell'
+import { ReadingProgress } from '@/components/reading-progress'
+import { formatDate, formatReadingTime } from '@/lib/format'
 import { getPost, getPostSlugs } from '@/lib/posts'
 
 // A static export has nothing to render unknown slugs on demand. Enumerate
@@ -33,10 +36,11 @@ export default async function PostPage({ params }: PageProps) {
   const post = await getPost(slug)
   if (!post) notFound()
 
-  const { default: Post, frontmatter } = post
+  const { default: Post, frontmatter, readingTimeMinutes } = post
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-16 sm:py-24">
+    <PageShell>
+      <ReadingProgress />
       <Link
         href="/"
         className="font-mono text-sm text-zinc-500 hover:text-zinc-900"
@@ -45,11 +49,13 @@ export default async function PostPage({ params }: PageProps) {
       </Link>
       <article className="prose prose-zinc mt-8 max-w-none">
         <p className="not-prose font-mono text-xs text-zinc-400">
-          {frontmatter.date} · {frontmatter.tags.join(', ')}
+          {formatDate(frontmatter.date)} ·{' '}
+          {formatReadingTime(readingTimeMinutes)} ·{' '}
+          {frontmatter.tags.join(', ')}
         </p>
         <h1 className="mt-2">{frontmatter.title}</h1>
         <Post />
       </article>
-    </main>
+    </PageShell>
   )
 }

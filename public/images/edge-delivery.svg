@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" role="img" aria-label="The static delivery pipeline: write MDX, git push, build to out/, edge cache, reader">
+  <rect width="800" height="400" fill="#ffffff"/>
+  <text x="400" y="72" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" font-weight="600" fill="#18181b">The whole architecture</text>
+  <text x="400" y="98" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#71717a">no server computed anything to get you this sentence</text>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#27272a">
+    <rect x="40" y="170" width="120" height="64" rx="10" fill="#fafafa" stroke="#d4d4d8"/>
+    <text x="100" y="206" text-anchor="middle">write .mdx</text>
+
+    <rect x="192" y="170" width="120" height="64" rx="10" fill="#fafafa" stroke="#d4d4d8"/>
+    <text x="252" y="206" text-anchor="middle">git push</text>
+
+    <rect x="344" y="170" width="120" height="64" rx="10" fill="#fafafa" stroke="#d4d4d8"/>
+    <text x="404" y="206" text-anchor="middle">build ’ out/</text>
+
+    <rect x="496" y="170" width="120" height="64" rx="10" fill="#18181b" stroke="#18181b"/>
+    <text x="556" y="206" text-anchor="middle" fill="#fafafa">edge cache</text>
+
+    <rect x="648" y="170" width="120" height="64" rx="10" fill="#fafafa" stroke="#d4d4d8"/>
+    <text x="708" y="206" text-anchor="middle">reader</text>
+  </g>
+
+  <g stroke="#a1a1aa" stroke-width="1.5" fill="none" marker-end="url(#arrow)">
+    <line x1="162" y1="202" x2="190" y2="202"/>
+    <line x1="314" y1="202" x2="342" y2="202"/>
+    <line x1="466" y1="202" x2="494" y2="202"/>
+    <line x1="618" y1="202" x2="646" y2="202"/>
+  </g>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a1a1aa"/>
+    </marker>
+  </defs>
+
+  <text x="400" y="316" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#a1a1aa">out/ is just files · the edge is just a cache · git log is the audit trail</text>
+</svg>

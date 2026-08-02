@@ -11,6 +11,19 @@ const withMDX = createMDX({
       ['remark-mdx-frontmatter', { name: 'frontmatter' }],
       'remark-gfm',
     ],
+    // Plugin names as strings (not imports): Turbopack serialises the MDX
+    // options out of this config, so anything here must be JSON-safe.
+    rehypePlugins: [
+      // Heading ids for anchor links.
+      'rehype-slug',
+      // Build-time Shiki highlighting. keepBackground off: the theme paints
+      // the tokens, app/globals.css paints the <pre> chrome — so restyling
+      // code blocks never means touching the highlighter config.
+      [
+        'rehype-pretty-code',
+        { theme: 'github-dark-default', keepBackground: false },
+      ],
+    ],
   },
 })
 

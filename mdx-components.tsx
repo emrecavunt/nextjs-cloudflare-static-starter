@@ -1,9 +1,24 @@
 import type { MDXComponents } from 'mdx/types'
 
-// Map MDX elements to your own components here, e.g. wrap <img> in a figure
-// with a caption, or add anchor links to headings. The defaults pass through.
+import { Callout, Insight, Warning } from '@/components/mdx/callout'
+import { Image, MarkdownImage } from '@/components/mdx/image'
+import { Pre } from '@/components/mdx/pre'
+import { TLDR } from '@/components/mdx/tldr'
+
+// What every MDX post can use, wired once:
+//  - element overrides: fenced code renders through Pre (copy button),
+//    markdown images through MarkdownImage
+//  - JSX components available in .mdx files with no import:
+//    <Callout>, <Warning>, <Insight>, <TLDR>, <Image>
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
+    pre: Pre,
+    img: MarkdownImage,
+    Callout,
+    Warning,
+    Insight,
+    TLDR,
+    Image,
     ...components,
   }
 }

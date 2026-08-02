@@ -7,6 +7,20 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- MDX component set (`components/mdx/`), wired once in `mdx-components.tsx`
+  and usable in every post without imports: code blocks with build-time Shiki
+  highlighting (`rehype-pretty-code`), line numbers, and a copy button;
+  `Callout`/`Warning`/`Insight`; `TLDR`; captioned `Image`. Heading anchors
+  via `rehype-slug`
+- Shared chrome: `SiteHeader`/`SiteFooter` in the root layout and a
+  `PageShell` container shared by every route
+- Post chrome: reading time computed from the raw `.mdx` at build time,
+  formatted dates (`lib/format.ts`), and a reading-progress bar on post pages
+- Showcase post `content/posts/mdx-components.mdx` doubling as living docs,
+  pinned by `tests/e2e/mdx-components.spec.ts`
+
 ### Fixed
 
 - Build no longer crashes with `TypeError: Invalid URL` when

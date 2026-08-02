@@ -1,0 +1,64 @@
+---
+title: 'MDX components that ship in the box'
+date: '2026-08-03'
+summary: 'Code blocks with a copy button, callouts, a TL;DR box, and captioned images — plain React components, usable in any post without imports.'
+tags: ['MDX', 'Components']
+---
+
+<TLDR>
+  Every block on this page is a React component in `components/mdx/`, wired once
+  in `mdx-components.tsx`. Use them from any `.mdx` file with plain JSX — no
+  imports, no registry edits.
+</TLDR>
+
+## Code blocks
+
+Fenced code is highlighted by Shiki **at build time**, so the reader downloads
+zero highlighting JavaScript — the only client JS a block ships is its copy
+button:
+
+```ts
+export function greet(name: string): string {
+  return `Hello, ${name}!`
+}
+```
+
+The language tag and the line numbers are pure CSS in `app/globals.css`,
+which is why copying a block never pastes the chrome. Restyling means
+editing a stylesheet, not a highlighter config.
+
+## Callouts
+
+<Callout type="note">
+  The default kind. Use it for context that helps but isn't load-bearing.
+</Callout>
+
+<Warning>
+  For the foot-guns: things that silently break a static export, like forgetting
+  `images.unoptimized` before you reach for `next/image`.
+</Warning>
+
+<Insight>
+  For the takeaway worth remembering — the one sentence a reader should keep
+  when they forget the rest of the section.
+</Insight>
+
+## Images
+
+JSX images take explicit dimensions and an optional caption. A static export
+has no optimizer to infer sizes for you, so you say what you mean:
+
+<Image
+  src="/images/edge-delivery.svg"
+  alt="Five boxes showing the pipeline: write MDX, git push, build to out/, edge cache, reader"
+  width={800}
+  height={400}
+  caption="The whole architecture, in one figure."
+/>
+
+## Make them yours
+
+Open `components/mdx/` and delete what you don't need: every component is
+self-contained, `mdx-components.tsx` is the only registry, and the e2e suite
+(`tests/e2e/mdx-components.spec.ts`) pins the contract so a pipeline upgrade
+can't silently un-style your posts.

@@ -8,4 +8,6 @@ export interface Frontmatter {
 
 export interface PostMeta extends Frontmatter {
   slug: string
+  /** Whole minutes, computed from the raw .mdx at build time. */
+  readingTimeMinutes: number
 }

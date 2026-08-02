@@ -1,16 +1,15 @@
 import Link from 'next/link'
 
+import { PageShell } from '@/components/page-shell'
+import { formatDate, formatReadingTime } from '@/lib/format'
 import { getAllPosts } from '@/lib/posts'
 
 export default async function Home() {
   const posts = await getAllPosts()
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-16 sm:py-24">
-      <p className="font-mono text-sm tracking-widest text-zinc-500 uppercase">
-        nextjs-cloudflare-static-starter
-      </p>
-      <h1 className="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+    <PageShell>
+      <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
         Static. On the edge. Boring on purpose.
       </h1>
       <p className="mt-4 leading-7 text-zinc-600">
@@ -27,7 +26,8 @@ export default async function Home() {
           <li key={post.slug}>
             <Link href={`/blog/${post.slug}/`} className="group block">
               <span className="font-mono text-xs text-zinc-400">
-                {post.date}
+                {formatDate(post.date)} ·{' '}
+                {formatReadingTime(post.readingTimeMinutes)}
               </span>
               <h2 className="mt-1 text-xl font-medium group-hover:underline">
                 {post.title}
@@ -39,6 +39,6 @@ export default async function Home() {
           </li>
         ))}
       </ul>
-    </main>
+    </PageShell>
   )
 }

@@ -1,8 +1,10 @@
 import Link from 'next/link'
 
+import { PageShell } from '@/components/page-shell'
+
 export default function NotFound() {
   return (
-    <main className="mx-auto max-w-2xl px-6 py-24">
+    <PageShell>
       <p className="font-mono text-sm tracking-widest text-zinc-500 uppercase">
         404
       </p>
@@ -17,6 +19,6 @@ export default function NotFound() {
         </Link>
         .
       </p>
-    </main>
+    </PageShell>
   )
 }

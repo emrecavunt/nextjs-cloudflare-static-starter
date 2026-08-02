@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 
+import { SiteFooter } from '@/components/site-footer'
+import { SiteHeader } from '@/components/site-header'
+
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -30,8 +33,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="bg-white font-sans text-zinc-900 antialiased">
+      <body className="flex min-h-screen flex-col bg-white font-sans text-zinc-900 antialiased">
+        <SiteHeader />
         {children}
+        <SiteFooter />
       </body>
     </html>
   )
