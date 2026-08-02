@@ -195,8 +195,10 @@ export CLOUDFLARE_ACCOUNT_ID="..."
 make deploy
 ```
 
-**From CI**: four workflows ship in `.github/workflows/`. Keep one, delete
-the other three, and don't leave four deploy triggers racing each other:
+**From CI**: four workflows ship in `.github/workflows/`. They are **inert by
+default** — `workflow_dispatch` only, so a fresh clone never fires a failing
+deploy against an unconfigured Cloudflare account. Keep one, delete the other
+three, and uncomment the `push`/`pull_request` triggers in the one you keep:
 
 | Workflow                   | Where the Cloudflare token lives                                            | Credentials stored in GitHub | Setup                                  |
 | -------------------------- | --------------------------------------------------------------------------- | ---------------------------- | -------------------------------------- |
@@ -212,10 +214,12 @@ GitHub mints an OIDC token, your cloud exchanges it for short-lived
 credentials scoped to this one repository, and the workflow reads the real
 secret at deploy time. Pick whichever cloud you already pay for.
 
-All four workflows deploy pushes to `main` into a protected `production`
-environment and PRs into an open `preview` one, skip fork PRs (no OIDC
-access), and write a deployment summary to the run page. The Terraform roots
-create those environments and fill them with non-secret variables only.
+Once activated, all four workflows deploy pushes to `main` into a protected
+`production` environment and PRs into an open `preview` one, skip fork PRs
+(no OIDC access), and write a deployment summary to the run page. Manual runs
+work before that too, once the secrets exist — handy for a first test deploy.
+The Terraform roots create those environments and fill them with non-secret
+variables only.
 
 ## Foot-guns, enumerated
 

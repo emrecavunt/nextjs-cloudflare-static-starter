@@ -1,4 +1,4 @@
-name: Deploy (keyless: GCP Secret Manager)
+name: 'Deploy (keyless: GCP Secret Manager)'
 
 # No Cloudflare token stored in GitHub. The workflow mints an OIDC token,
 # exchanges it for short-lived GCP credentials via Workload Identity
@@ -9,11 +9,14 @@ name: Deploy (keyless: GCP Secret Manager)
 # below on the production/preview environments. Secret *values* are added
 # out-of-band: gcloud secrets versions add <id> --data-file=-
 
+# Ships inert on purpose: manual runs only, so this template repo (and every
+# fresh clone) never fires a failing deploy against an unconfigured account.
+# To activate real deploys, finish the setup above and uncomment the triggers.
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  # push:
+  #   branches: [main]
+  # pull_request:
+  #   branches: [main]
   workflow_dispatch:
 
 concurrency:

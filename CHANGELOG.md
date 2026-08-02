@@ -7,6 +7,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Deploy workflows now ship inert (`workflow_dispatch` only) so the template
+  and fresh clones never fire failing deploys against an unconfigured
+  Cloudflare account; uncomment the `push`/`pull_request` triggers in the one
+  workflow you keep to activate real deploys
+
 ### Added
 
 - MDX component set (`components/mdx/`), wired once in `mdx-components.tsx`
@@ -23,6 +30,9 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- Keyless deploy workflow names are now quoted YAML strings, so GitHub shows
+  `Deploy (keyless: …)` instead of the file path — and Prettier can parse the
+  files again
 - Build no longer crashes with `TypeError: Invalid URL` when
   `NEXT_PUBLIC_SITE_URL` is set but empty (the deploy workflows pass the
   GitHub variable through, and an unconfigured variable arrives as `""`)

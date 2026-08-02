@@ -1,4 +1,4 @@
-name: Deploy (keyless: HashiCorp Vault)
+name: 'Deploy (keyless: HashiCorp Vault)'
 
 # For teams whose secrets already live in Vault. GitHub's OIDC token is
 # presented to Vault's JWT auth method, which maps it, bound to THIS
@@ -22,11 +22,14 @@ name: Deploy (keyless: HashiCorp Vault)
 # GitHub-side: environment variables VAULT_ADDR, VAULT_JWT_ROLE,
 # VAULT_NAMESPACE (optional), CLOUDFLARE_PAGES_PROJECT_NAME, NEXT_PUBLIC_SITE_URL.
 
+# Ships inert on purpose: manual runs only, so this template repo (and every
+# fresh clone) never fires a failing deploy against an unconfigured account.
+# To activate real deploys, finish the setup above and uncomment the triggers.
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  # push:
+  #   branches: [main]
+  # pull_request:
+  #   branches: [main]
   workflow_dispatch:
 
 concurrency:

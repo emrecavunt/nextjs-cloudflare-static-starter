@@ -1,4 +1,4 @@
-name: Deploy (keyless: AWS Secrets Manager)
+name: 'Deploy (keyless: AWS Secrets Manager)'
 
 # The AWS counterpart of the GCP pattern: no AWS access keys and no Cloudflare
 # token stored in GitHub. GitHub mints an OIDC token, AWS IAM exchanges it for
@@ -12,11 +12,14 @@ name: Deploy (keyless: AWS Secrets Manager)
 #   aws secretsmanager put-secret-value --secret-id <id> --secret-string \
 #     '{"CLOUDFLARE_API_TOKEN":"...","CLOUDFLARE_ACCOUNT_ID":"..."}'
 
+# Ships inert on purpose: manual runs only, so this template repo (and every
+# fresh clone) never fires a failing deploy against an unconfigured account.
+# To activate real deploys, finish the setup above and uncomment the triggers.
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  # push:
+  #   branches: [main]
+  # pull_request:
+  #   branches: [main]
   workflow_dispatch:
 
 concurrency:

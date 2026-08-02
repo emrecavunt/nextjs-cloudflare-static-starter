@@ -10,11 +10,14 @@ name: Deploy
 #   2. GitHub repo variables: CLOUDFLARE_PAGES_PROJECT_NAME, NEXT_PUBLIC_SITE_URL
 #   3. terraform/cloudflare provisions the Pages project, domain, and DNS.
 
+# Ships inert on purpose: manual runs only, so this template repo (and every
+# fresh clone) never fires a failing deploy against an unconfigured account.
+# To activate real deploys, finish the setup above and uncomment the triggers.
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  # push:
+  #   branches: [main]
+  # pull_request:
+  #   branches: [main]
   workflow_dispatch:
 
 concurrency:
