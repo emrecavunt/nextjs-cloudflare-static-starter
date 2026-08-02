@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 
 import { getAllPosts } from '@/lib/posts'
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://example.com'
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com'
 
 // Metadata routes are dynamic by default; a static export must render them
 // at build time.

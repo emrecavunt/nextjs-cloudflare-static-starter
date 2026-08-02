@@ -9,7 +9,9 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
 })
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://example.com'
+// `||` on purpose: CI passes an empty string when the variable is unset,
+// and `??` would not catch it.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
