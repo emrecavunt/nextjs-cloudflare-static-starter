@@ -53,7 +53,7 @@ jobs:
             account_id:${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_SECRET_CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10
 
