@@ -1,12 +1,35 @@
 version: 2
 updates:
+  # Group related packages so a security bump cannot land `next` apart from
+  # `@next/mdx` and `eslint-config-next`, and so minor/patch noise does not
+  # fill the open-PR limit and stall the queue. Majors stay ungrouped.
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
+    groups:
+      next:
+        patterns:
+          - next
+          - '@next/mdx'
+          - eslint-config-next
+      react:
+        patterns:
+          - react
+          - react-dom
+          - '@types/react'
+          - '@types/react-dom'
+      npm-minor-and-patch:
+        update-types:
+          - minor
+          - patch
 
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    groups:
+      github-actions:
+        patterns:
+          - '*'

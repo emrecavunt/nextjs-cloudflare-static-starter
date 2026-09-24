@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: read
+  # comment-summary-in-pr writes the vulnerability summary on failure.
+  pull-requests: write
 
 jobs:
   dependency-review:

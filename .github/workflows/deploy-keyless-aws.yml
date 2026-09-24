@@ -61,12 +61,14 @@ jobs:
           echo "account_id=${account_id}" >> "$GITHUB_OUTPUT"
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        # Pin matches packageManager in package.json so the lockfile
+        # overrides block stays valid for `pnpm install --frozen-lockfile`.
+        uses: pnpm/action-setup@v6
         with:
-          version: 10
+          version: 10.34.5
 
       - name: Setup Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -81,7 +83,7 @@ jobs:
 
       - name: Deploy to Cloudflare Pages
         id: deploy
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ steps.cloudflare.outputs.api_token }}
           accountId: ${{ steps.cloudflare.outputs.account_id }}

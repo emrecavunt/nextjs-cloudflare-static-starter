@@ -13,6 +13,15 @@ All notable changes to this project are documented here. The format follows
   and fresh clones never fire failing deploys against an unconfigured
   Cloudflare account; uncomment the `push`/`pull_request` triggers in the one
   workflow you keep to activate real deploys
+- `react` and `react-dom` are both 19.3.0. `next`, `@next/mdx`, and
+  `eslint-config-next` move together
+- GitHub Actions: `pnpm/action-setup` v6, `actions/setup-node` v7, and
+  `cloudflare/wrangler-action` v4. pnpm is pinned to 10.34.5 via
+  `packageManager` (the same pin the workflows install) so a floating pnpm
+  10 cannot rewrite the lockfile out from under `pnpm.overrides`
+- Dependabot groups the Next.js packages, the React packages, GitHub
+  Actions, and other minor/patch updates, and raises the npm open-PR limit
+  so security bumps are not stuck behind one-package PRs
 
 ### Added
 
@@ -39,9 +48,14 @@ All notable changes to this project are documented here. The format follows
 
 ### Security
 
-- Bump `next`, `@next/mdx`, and `eslint-config-next` to 16.2.12 (9 Next.js
-  advisories); override transitive `postcss` to ^8.5.25 and `sharp` to
-  ^0.35.3 (4 advisories). `pnpm audit` is clean
+- Bump `next`, `@next/mdx`, and `eslint-config-next` to 16.3.6, including
+  [GHSA-vcvr-r3jv-pc5j](https://github.com/vercel/next.js/security/advisories/GHSA-vcvr-r3jv-pc5j)
+  (ImageResponse RCE, Next.js 16.2.0–16.3.5). Override transitive `postcss`
+  to ^8.5.28 and `sharp` to ^0.35.4
+- Bump `remark-mdx-frontmatter` to 6.0.0, which drops the vulnerable `toml`
+  dependency ([GHSA-82x6-q7mm-w9cf](https://github.com/advisories/GHSA-82x6-q7mm-w9cf),
+  [GHSA-v5mp-jgw5-2x6j](https://github.com/advisories/GHSA-v5mp-jgw5-2x6j)).
+  `pnpm audit` is clean
 
 ## [0.1.0] - 2026-08-02
 

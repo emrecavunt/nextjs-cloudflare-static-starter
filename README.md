@@ -52,7 +52,8 @@ pay for it knowingly.
 
 ## Quickstart
 
-Requires Node 24 (`.nvmrc` pins it) and pnpm 10.
+Requires Node 24 (`.nvmrc` pins it) and pnpm 10.34.5 (`packageManager` in
+`package.json`; `corepack enable` picks it up).
 
 ```bash
 git clone https://github.com/emrecavunt/nextjs-cloudflare-static-starter.git my-site
