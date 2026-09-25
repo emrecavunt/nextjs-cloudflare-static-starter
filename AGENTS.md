@@ -20,7 +20,11 @@ client-side fetch to an external endpoint, or a `_redirects` rule).
 
 ## Environment
 
-- Node 24 (pinned in `.nvmrc`), pnpm 10. Use pnpm, never npm/yarn.
+- Node 24 (pinned in `.nvmrc`), pnpm 10.34.5 (pinned in `package.json`
+  `packageManager` and in every workflow's `pnpm/action-setup` `version`).
+  Use pnpm, never npm/yarn. Keep those two pins identical: a different pnpm
+  rewrites the lockfile `overrides` block and `pnpm install --frozen-lockfile`
+  fails.
 - One env var: `NEXT_PUBLIC_SITE_URL` (canonical URL for metadata, sitemap,
   robots). Falls back to `https://example.com` when unset or empty — CI never
   needs it. Copy `.env.example` to `.env.local` for local work.

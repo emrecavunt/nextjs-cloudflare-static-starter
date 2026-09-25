@@ -2,7 +2,7 @@
 # nextjs-cloudflare-static-starter
 #
 # Run `make` or `make help` to list available targets.
-# Requires: Node 24 (.nvmrc) and pnpm 10+.
+# Requires: Node 24 (.nvmrc) and pnpm 10.34.5 (package.json packageManager).
 # Terraform targets take BACKEND=cloudflare|gcp|aws.
 # ============================================================
 
